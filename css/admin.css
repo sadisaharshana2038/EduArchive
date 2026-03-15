@@ -71,7 +71,7 @@
 /* ── Video Manager ── */
 .video-manager-layout {
   display: grid;
-  grid-template-columns: 360px 1fr;
+  grid-template-columns: 360px minmax(0, 1fr); /* CRITICAL: minmax(0, 1fr) prevents column expansion */
   gap: 24px;
   align-items: start;
 }
@@ -99,18 +99,73 @@
   border-radius: var(--radius-sm);
   margin-bottom: 8px;
   transition: var(--transition);
+  overflow: hidden; /* Prevent content from bleeding out */
+  width: 100%;
+  box-sizing: border-box;
 }
 .vm-lesson-row:hover { border-color: var(--border-accent); }
 .vm-lesson-num {
   width: 28px; height: 28px; border-radius: 8px;
   background: rgba(108,99,255,0.15); border: 1px solid rgba(108,99,255,0.3);
   display: flex; align-items: center; justify-content: center;
-  font-size: 11px; font-weight: 700; color: var(--accent-light); flex-shrink: 0;
+  font-size: 11px; font-weight: 700; color: var(--accent-light); 
+  flex-shrink: 0; /* Prevent squashing */
 }
-.vm-lesson-info { flex: 1; overflow: hidden; }
-.vm-lesson-title { font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.vm-lesson-meta  { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
-.vm-delete-btn { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 16px; padding: 4px; transition: var(--transition); }
+.vm-lesson-info { 
+  flex: 1; 
+  min-width: 0; /* CRITICAL for ellipsis in flexbox */
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  max-width: 100%;
+}
+.vm-lesson-title { 
+  font-size: 14px; 
+  font-weight: 600; 
+  white-space: nowrap; 
+  overflow: hidden; 
+  text-overflow: ellipsis; 
+  color: var(--text-primary);
+  width: 100%;
+}
+.vm-lesson-meta  { 
+  font-size: 12px; 
+  color: var(--text-muted); 
+  margin-top: 2px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 100%;
+}
+.vm-lesson-meta span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+.vm-lesson-meta span code {
+  max-width: 120px;
+  display: inline-block;
+  vertical-align: bottom;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.vm-delete-btn { 
+  background: none; 
+  border: none; 
+  color: var(--text-muted); 
+  cursor: pointer; 
+  font-size: 16px; 
+  padding: 8px; 
+  transition: var(--transition);
+  flex-shrink: 0; /* CRITICAL: Prevent button from being squashed */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px; /* Fixed size */
+  height: 40px; /* Fixed size */
+}
 .vm-delete-btn:hover { color: var(--danger); }
 
 /* ── Students Table ── */
@@ -169,3 +224,14 @@
   .students-table { font-size: 12px; }
   .students-table th, .students-table td { padding: 10px 10px; }
 }
+
+/* Small Loader for Buttons */
+.loader-sm {
+  width: 14px; height: 14px;
+  border: 2px solid rgba(255,255,255,0.2);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  display: inline-block;
+}
+
