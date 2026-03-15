@@ -81,8 +81,6 @@
   const placeholder  = document.getElementById('videoPlaceholder');
   const secureWrap   = document.getElementById('secureWrapper');
   const videoTitle   = document.getElementById('videoTitle');
-  const tutesSection = document.getElementById('tutesSection');
-  const tutesList    = document.getElementById('tutesList');
   const videoSub     = document.getElementById('videoSub');
   const videoCtrl    = document.getElementById('videoControls');
   const lessonDesc   = document.getElementById('lessonDescription');
@@ -109,20 +107,6 @@
       </div>`).join('');
   }
 
-  async function renderTutes() {
-    const tutesSnap = await fbDb.collection('tutes').where('monthId', '==', monthId).get();
-    const tutes = tutesSnap.docs.map(d => d.data());
-    if (tutes.length > 0) {
-      tutesSection.style.display = 'block';
-      tutesList.innerHTML = tutes.map(t => `
-        <a href="${t.link}" target="_blank" class="tute-item">
-          <span class="tute-icon">📥</span>
-          <span class="tute-name">${t.title}</span>
-        </a>`).join('');
-    } else {
-      tutesSection.style.display = 'none';
-    }
-  }
 
   window.playLesson = function(index) {
     if (index < 0 || index >= lessons.length) return;
@@ -374,6 +358,5 @@
   });
 
   renderList();
-  renderTutes();
   if (apiReady) checkAndPlayFirst();
 })();
