@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EduArchive — Unlock a Month</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/payment.css"/>
+</head>
+<body oncontextmenu="return false">
+<div class="orb orb-1"></div><div class="orb orb-2"></div>
+
+<nav class="nav">
+  <div class="nav-brand"><div class="nav-brand-icon">🎓</div><span>EduArchive</span></div>
+  <div class="nav-links">
+    <a class="nav-link" href="dashboard.html">📚 Library</a>
+    <a class="nav-link" href="collection.html">🏆 My Collection</a>
+    <a class="nav-link active" href="payment.html">💳 Unlock Month</a>
+  </div>
+  <div class="nav-actions">
+    <div class="nav-avatar" id="navAvatar"></div>
+    <button class="btn btn-ghost btn-sm" onclick="Auth.logout()">Sign Out</button>
+  </div>
+</nav>
+
+<div class="layout-wrap">
+  <aside class="sidebar">
+    <span class="sidebar-section-label">Navigation</span>
+    <a class="sidebar-link" href="dashboard.html"><span class="icon">📚</span> Archive Library</a>
+    <a class="sidebar-link" href="collection.html"><span class="icon">🏆</span> My Collection</a>
+    <a class="sidebar-link active" href="payment.html"><span class="icon">💳</span> Unlock Month</a>
+  </aside>
+
+  <main class="main-with-sidebar">
+    <div class="main-content">
+
+      <div class="section-header">
+        <h2>💳 Unlock a Month</h2>
+        <p>Select the archive you want to unlock, complete the bank transfer, and upload your slip.</p>
+      </div>
+
+      <div class="payment-layout">
+
+        <!-- Left: Form -->
+        <div class="payment-form-col">
+
+          <!-- Step 1: Select month -->
+          <div class="payment-step card">
+            <div class="step-header">
+              <div class="step-num">1</div>
+              <div><h3>Select Archive Month</h3><p style="font-size:13px">Choose the month you want to unlock.</p></div>
+            </div>
+            <div class="month-selector" id="monthSelector"></div>
+          </div>
+
+          <!-- Step 2: Bank details -->
+          <div class="payment-step card">
+            <div class="step-header">
+              <div class="step-num">2</div>
+              <div><h3>Complete Bank Transfer</h3><p style="font-size:13px">Transfer the exact amount shown below.</p></div>
+            </div>
+            <div class="bank-details-box" id="bankDetailsBox"></div>
+            <div class="bank-warning">⚠️ Please use your <strong>phone number</strong> as the transfer reference so we can identify your payment.</div>
+          </div>
+
+          <!-- Step 3: Upload -->
+          <div class="payment-step card">
+            <div class="step-header">
+              <div class="step-num">3</div>
+              <div><h3>Upload Payment Slip</h3><p style="font-size:13px">Take a photo or screenshot of your bank receipt.</p></div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Payment Slip Image</label>
+              <div class="file-drop-zone" id="dropZone">
+                <div class="drop-icon">📎</div>
+                <div class="drop-label">Click to upload or drag & drop</div>
+                <div class="drop-sub">PNG, JPG, PDF · Max 5MB</div>
+                <input type="file" id="slipFile" accept="image/*,.pdf" style="display:none"/>
+              </div>
+              <div class="slip-preview" id="slipPreview" style="display:none"></div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Bank Name</label>
+              <select id="bankSelect" class="form-input">
+                <option value="">-- Select your bank --</option>
+                <option>People's Bank</option>
+                <option>Commercial Bank</option>
+                <option>Sampath Bank</option>
+                <option>HNB</option>
+                <option>BOC</option>
+                <option>NSB</option>
+                <option>Other</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Note (optional)</label>
+              <textarea id="payNote" class="form-input" rows="2" placeholder="e.g. Transaction ID or any additional info…"></textarea>
+            </div>
+
+            <div id="submitError" class="form-error" style="display:none"></div>
+
+            <button class="btn btn-primary btn-full" id="submitBtn" style="margin-top:8px" disabled>
+              <span id="submitTxt">🚀 Submit Payment</span>
+              <div class="btn-loader" id="submitLoader" style="display:none"></div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Right: Summary -->
+        <div class="payment-summary-col">
+          <div class="summary-card card">
+            <h3 style="margin-bottom:20px">📋 Payment Summary</h3>
+            <div id="summaryContent">
+              <div class="summary-empty">Select a month above to see the summary.</div>
+            </div>
+          </div>
+
+          <div class="faq-card card">
+            <h3 style="margin-bottom:16px">❓ How it works</h3>
+            <div class="faq-item">
+              <div class="faq-q">⏱ When will I get access?</div>
+              <div class="faq-a">Usually within a few hours. The teacher manually reviews each payment.</div>
+            </div>
+            <div class="faq-item">
+              <div class="faq-q">♾️ Does it expire?</div>
+              <div class="faq-a">Never! Once approved, you have permanent access to that month's content.</div>
+            </div>
+            <div class="faq-item">
+              <div class="faq-q">❌ What if rejected?</div>
+              <div class="faq-a">You'll need to re-submit. Make sure the bank details match exactly.</div>
+            </div>
+          </div>
+
+          <div class="my-payments-card card" id="myPaymentsCard"></div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- Success overlay -->
+<div class="overlay" id="successOverlay">
+  <div class="modal" style="text-align:center">
+    <div style="font-size:56px;margin-bottom:16px">🎉</div>
+    <h2 style="margin-bottom:12px">Slip Submitted!</h2>
+    <p style="margin-bottom:24px">Your payment slip has been sent for review. You'll get access once the teacher approves it.</p>
+    <div style="display:flex;gap:12px;justify-content:center">
+      <button class="btn btn-ghost btn-sm" onclick="window.location.href='payment.html'">Submit Another</button>
+      <button class="btn btn-primary btn-sm" onclick="window.location.href='dashboard.html'">Go to Library</button>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <p>© 2026 EduArchive Portal. All rights reserved.</p>
+  <p style="font-size: 13px; margin-top: 4px;">Developed with ❤️ by <a href="https://futuredevs.top" target="_blank">Futuredevs.top</a></p>
+</footer>
+
+<div id="toast-container"></div>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+<script src="js/firebase-config.js"></script>
+<script src="js/app.js"></script>
+<script src="js/payment.js"></script>
+</body>
+</html>

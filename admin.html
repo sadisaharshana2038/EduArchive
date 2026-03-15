@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EduArchive — Admin Panel</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/admin.css"/>
+</head>
+<body oncontextmenu="return false">
+<div class="orb orb-1"></div><div class="orb orb-2"></div>
+
+<nav class="nav">
+  <div class="nav-brand"><div class="nav-brand-icon">🎓</div><span>EduArchive <span class="badge badge-danger" style="font-size:10px;margin-left:4px">ADMIN</span></span></div>
+  <div class="nav-links">
+    <a class="nav-link" id="tabQueueBtn" onclick="showTab('queue')">📋 Approval Queue</a>
+    <a class="nav-link" id="tabVideosBtn" onclick="showTab('videos')">🎬 Video Manager</a>
+    <a class="nav-link" id="tabMonthsBtn" onclick="showTab('months')">📅 Months</a>
+    <a class="nav-link" id="tabTutesBtn" onclick="showTab('tutes')">📑 Tutes</a>
+    <a class="nav-link" id="tabStudentsBtn" onclick="showTab('students')">👥 Students</a>
+  </div>
+  <div class="nav-actions">
+    <div class="nav-avatar" id="navAvatar"></div>
+    <button class="btn btn-ghost btn-sm" onclick="Auth.logout()">Sign Out</button>
+  </div>
+</nav>
+
+<div class="admin-layout page-container">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <span class="sidebar-section-label">Admin Tools</span>
+    <a class="sidebar-link" id="sideQueueBtn" onclick="showTab('queue')"><span class="icon">📋</span> Approval Queue <span id="pendingCount" class="badge badge-warning" style="margin-left:auto;font-size:11px"></span></a>
+    <a class="sidebar-link" id="sideVideosBtn" onclick="showTab('videos')"><span class="icon">🎬</span> Video Manager</a>
+    <a class="sidebar-link" id="sideMonthsBtn" onclick="showTab('months')"><span class="icon">📅</span> Months Manager</a>
+    <a class="sidebar-link" id="sideTutesBtn" onclick="showTab('tutes')"><span class="icon">📑</span> Tute Manager</a>
+    <a class="sidebar-link" id="sideStudentsBtn" onclick="showTab('students')"><span class="icon">👥</span> Students</a>
+    <span class="sidebar-section-label" style="margin-top:12px">Stats</span>
+    <div class="admin-sidebar-stats" id="adminSideStats"></div>
+  </aside>
+
+  <main class="main-with-sidebar">
+    <div class="main-content">
+
+      <!-- ── TAB: Approval Queue ── -->
+      <div id="tabQueue" class="admin-tab">
+        <div class="section-header">
+          <h2>📋 Approval Queue</h2>
+          <p>Review and approve student payment submissions.</p>
+        </div>
+        <div class="queue-filters">
+          <button class="filter-tab active" data-qfilter="pending" onclick="filterQueue('pending',this)">⏳ Pending</button>
+          <button class="filter-tab" data-qfilter="approved" onclick="filterQueue('approved',this)">✓ Approved</button>
+          <button class="filter-tab" data-qfilter="rejected" onclick="filterQueue('rejected',this)">✕ Rejected</button>
+          <button class="filter-tab" data-qfilter="all" onclick="filterQueue('all',this)">All</button>
+        </div>
+        <div id="queueList"></div>
+      </div>
+
+      <!-- ── TAB: Video Manager ── -->
+      <div id="tabVideos" class="admin-tab" style="display:none">
+        <div class="section-header">
+          <h2>🎬 Video Manager</h2>
+          <p>Add new YouTube lessons and assign them to archive months.</p>
+          <div style="margin-top:10px">
+            <button class="btn btn-danger btn-sm" onclick="clearAllLessons()">🗑 Clear All Existing Lessons</button>
+          </div>
+        </div>
+
+        <div class="video-manager-layout">
+          <!-- Add video form -->
+          <div class="card add-video-form">
+            <h3 style="margin-bottom:20px">➕ Add New Lesson</h3>
+            <div class="form-group">
+              <label class="form-label">Archive Month</label>
+              <select id="vmMonth" class="form-input"><option value="">-- Select Month --</option></select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Lesson Title</label>
+              <input type="text" id="vmTitle" class="form-input" placeholder="e.g. Introduction to Arrays"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">YouTube Video ID or Link</label>
+              <div class="input-group">
+                <span class="input-prefix">
+                  <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M23.495 6.205a3.007 3.007 0 00-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 00.527 6.205a31.247 31.247 0 00-.522 5.805 31.247 31.247 0 00.522 5.783 3.007 3.007 0 002.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 002.088-2.088 31.247 31.247 0 00.5-5.783 31.247 31.247 0 00-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg>
+                </span>
+                <input type="text" id="vmYtId" class="form-input" placeholder="ID or Paste Link here..."/>
+              </div>
+              <span style="font-size:12px;color:var(--text-muted)">Supports <strong>IDs</strong> or <strong>Full YouTube Links</strong></span>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Duration (mm:ss)</label>
+              <input type="text" id="vmDuration" class="form-input" placeholder="45:30"/>
+            </div>
+            <button class="btn btn-primary btn-full" onclick="addLesson()" style="margin-top:8px">➕ Add Lesson</button>
+          </div>
+
+          <!-- Lessons by month -->
+          <div class="video-list-panel">
+            <div class="vm-month-selector" id="vmMonthList"></div>
+            <div id="vmLessonsDisplay"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── TAB: Months Manager ── -->
+      <div id="tabMonths" class="admin-tab" style="display:none">
+        <div class="section-header">
+          <h2>📅 Months Manager</h2>
+          <p>Create and manage educational archive months.</p>
+        </div>
+
+        <div class="video-manager-layout">
+          <!-- Add month form -->
+          <div class="card add-video-form">
+            <h3 style="margin-bottom:20px">➕ Add New Month</h3>
+            <div class="form-group">
+              <label class="form-label">Month Label</label>
+              <input type="text" id="monthLabel" class="form-input" placeholder="e.g. May 2026"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Release Date</label>
+              <input type="date" id="monthReleaseDate" class="form-input"/>
+            </div>
+            <button class="btn btn-primary btn-full" onclick="addMonth()" style="margin-top:8px">➕ Add Month</button>
+          </div>
+
+          <!-- Months List -->
+          <div class="video-list-panel">
+            <div id="monthsManagerList"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── TAB: Tute Manager ── -->
+      <div id="tabTutes" class="admin-tab" style="display:none">
+        <div class="section-header">
+          <h2>📑 Tute Manager</h2>
+          <p>Assign and manage download links for student tutes.</p>
+        </div>
+
+        <div class="video-manager-layout">
+          <!-- Add tute form -->
+          <div class="card add-video-form">
+            <h3 style="margin-bottom:20px">➕ Add New Tute</h3>
+            <div class="form-group">
+              <label class="form-label">Archive Month</label>
+              <select id="tmMonth" class="form-input">
+                <option value="">-- Select Month --</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Tute Title</label>
+              <input type="text" id="tmTitle" class="form-input" placeholder="e.g. Unit 05 - Integration Tute"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Google Drive Link</label>
+              <input type="url" id="tmLink" class="form-input" placeholder="https://drive.google.com/..."/>
+            </div>
+            <button class="btn btn-primary btn-full" onclick="addTute()" style="margin-top:8px">➕ Add Tute</button>
+          </div>
+
+          <!-- Tutes List -->
+          <div class="video-list-panel">
+            <div class="filter-bar" style="margin-bottom:15px; background:none; padding:0">
+              <div class="filter-tabs" id="tmMonthList"></div>
+            </div>
+            <div id="tutesManagerList"></div>
+          </div>
+        </div>
+      </div>
+
+<!-- Student Management Tab -->
+      <div id="tabStudents" class="admin-tab" style="display:none">
+        <div class="section-header">
+          <h2>👥 Student Management</h2>
+          <p>View all enrolled students and manage their access.</p>
+        </div>
+        
+        <div class="search-container" style="margin-bottom:20px; max-width:400px;">
+          <div class="input-group">
+            <span class="input-prefix">🔍</span>
+            <input type="text" id="studentSearch" class="form-input" placeholder="Search by name or phone..."/>
+          </div>
+        </div>
+
+        <div id="studentsList"></div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- Access Management Modal -->
+<div class="overlay" id="accessModal">
+  <div class="modal" style="max-width:500px">
+    <div class="modal-header">
+      <h3 class="modal-title">🔐 Manage Student Access</h3>
+      <button class="modal-close" onclick="closeAccessModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="accessStudentInfo" style="margin-bottom:20px; padding:15px; background:rgba(255,255,255,0.03); border-radius:10px; border:1px solid var(--border)">
+        <div id="accessStudentName" style="font-weight:700; color:var(--text-primary); font-size:16px"></div>
+        <div id="accessStudentPhone" style="font-size:13px; color:var(--text-muted)"></div>
+      </div>
+      
+      <p style="font-size:14px; margin-bottom:12px; font-weight:600">Select Unlocked Months:</p>
+      <div id="accessMonthsList" class="checkbox-list" style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:24px; max-height:300px; overflow-y:auto; padding-right:8px">
+        <!-- Month checkboxes will be rendered here -->
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn btn-ghost" onclick="closeAccessModal()">Cancel</button>
+        <button class="btn btn-primary" id="saveAccessBtn">Save Changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Slip Viewer Modal -->
+<div class="overlay" id="slipModal">
+  <div class="modal" style="max-width:640px">
+    <div class="modal-header">
+      <h3 class="modal-title">📄 Payment Slip Review</h3>
+      <button class="modal-close" onclick="closeSlipModal()">✕</button>
+    </div>
+    <div id="slipModalContent"></div>
+  </div>
+</div>
+
+<footer class="footer">
+  <p>© 2026 EduArchive Portal. All rights reserved.</p>
+  <p style="font-size: 13px; margin-top: 4px;">Developed with ❤️ by <a href="https://futuredevs.top" target="_blank">Futuredevs.top</a></p>
+</footer>
+
+<div id="toast-container"></div>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+<script src="js/firebase-config.js"></script>
+<script src="js/app.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>

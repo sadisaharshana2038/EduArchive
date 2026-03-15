@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EduArchive — My Collection</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/dashboard.css"/>
+  <link rel="stylesheet" href="css/collection.css"/>
+</head>
+<body oncontextmenu="return false">
+<div class="orb orb-1"></div><div class="orb orb-2"></div>
+
+<nav class="nav">
+  <div class="nav-brand"><div class="nav-brand-icon">🎓</div><span>EduArchive</span></div>
+  <div class="nav-links">
+    <a class="nav-link" href="dashboard.html">📚 Library</a>
+    <a class="nav-link active" href="collection.html">🏆 My Collection</a>
+    <a class="nav-link" href="payment.html">💳 Unlock Month</a>
+  </div>
+  <div class="nav-actions">
+    <div class="nav-avatar" id="navAvatar"></div>
+    <button class="btn btn-ghost btn-sm" onclick="Auth.logout()">Sign Out</button>
+  </div>
+</nav>
+
+<div class="layout-wrap">
+  <aside class="sidebar">
+    <span class="sidebar-section-label">Navigation</span>
+    <a class="sidebar-link" href="dashboard.html"><span class="icon">📚</span> Archive Library</a>
+    <a class="sidebar-link active" href="collection.html"><span class="icon">🏆</span> My Collection</a>
+    <a class="sidebar-link" href="payment.html"><span class="icon">💳</span> Unlock Month</a>
+  </aside>
+
+  <main class="main-with-sidebar">
+    <div class="main-content">
+
+      <!-- Profile Header -->
+      <div class="profile-banner">
+        <div class="profile-avatar" id="profileAvatar"></div>
+        <div class="profile-info">
+          <h1 id="profileName">Student</h1>
+          <p id="profilePhone" style="font-size:14px; color:var(--text-muted)"></p>
+          <div class="profile-badges" id="profileBadges"></div>
+        </div>
+        <div class="profile-stats" id="profileStats"></div>
+      </div>
+
+      <!-- Collection Grid -->
+      <div class="section-header">
+        <h2>🏆 My Archive Collection</h2>
+        <p>All the months you own — permanently unlocked.</p>
+      </div>
+
+      <div class="collection-grid" id="collectionGrid"></div>
+
+    </div>
+  </main>
+</div>
+
+<!-- Tutes List Modal -->
+<div class="overlay" id="tutesModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 class="modal-title">📑 Study Materials</h3>
+      <button class="modal-close" onclick="closeTutesModal()">✕</button>
+    </div>
+    <div id="tutesModalContent" style="padding: 20px 0"></div>
+  </div>
+</div>
+
+<footer class="footer">
+  <p>© 2026 EduArchive Portal. All rights reserved.</p>
+  <p style="font-size: 13px; margin-top: 4px;">Developed with ❤️ by <a href="https://futuredevs.top" target="_blank">Futuredevs.top</a></p>
+</footer>
+
+<div id="toast-container"></div>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+<script src="js/firebase-config.js"></script>
+<script src="js/app.js"></script>
+<script src="js/collection.js"></script>
+</body>
+</html>

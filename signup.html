@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EduArchive Portal — Sign Up</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/login.css"/>
+</head>
+<body oncontextmenu="return false">
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<div class="login-page page-container">
+  <div class="login-left">
+    <div class="login-left-inner">
+      <div class="brand-logo">
+        <div class="brand-icon">🎓</div>
+        <span class="brand-name">EduArchive</span>
+      </div>
+      <h1 class="login-tagline">Join the<br/><span class="gradient-text">Future of Learning.</span></h1>
+      <p class="login-sub">Create your account to start building your personal library of knowledge.</p>
+    </div>
+  </div>
+
+  <div class="login-right">
+    <div class="login-card card-glass">
+      <div class="login-card-header">
+        <div class="login-card-icon">📝</div>
+        <h2>Create Account</h2>
+        <p>Join the student community today</p>
+      </div>
+
+      <form id="signupForm" class="login-form">
+        <div class="form-group">
+          <label class="form-label" for="name">Full Name</label>
+          <div class="input-group">
+            <span class="input-prefix">👤</span>
+            <input type="text" id="name" class="form-input" placeholder="Your Name" required/>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="phone">Phone Number</label>
+          <div class="input-group">
+            <span class="input-prefix">📱</span>
+            <input type="tel" id="phone" class="form-input" placeholder="07X XXX XXXX" required/>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="password">Password</label>
+          <div class="input-group">
+            <span class="input-prefix">🔒</span>
+            <input type="password" id="password" class="form-input" placeholder="Min. 6 characters" required minlength="6"/>
+          </div>
+        </div>
+
+        <div id="signupError" class="form-error" style="display:none"></div>
+
+        <button type="submit" class="btn btn-primary btn-full btn-lg" id="signupBtn">
+          <span id="signupBtnText">Create Account</span>
+          <div class="btn-loader" id="signupLoader" style="display:none"></div>
+        </button>
+      </form>
+
+      <div class="login-footer">
+        <p>Already have an account? <a href="index.html" style="color:var(--accent-light); font-weight:600;">Sign In</a></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <p>© 2026 EduArchive Portal. All rights reserved.</p>
+  <p style="font-size: 13px; margin-top: 4px;">Developed with ❤️ by <a href="https://futuredevs.top" target="_blank">Futuredevs.top</a></p>
+</footer>
+
+<div id="toast-container"></div>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+<script src="js/firebase-config.js"></script>
+<script src="js/app.js"></script>
+<script src="js/signup.js"></script>
+</body>
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EduArchive — Firestore Seeder</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #0a0a0f; color: #e8e8f0; font-family: 'Inter', sans-serif; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; }
+    .card { background: #12121a; border: 1px solid #1e1e2e; border-radius: 16px; padding: 36px; max-width: 600px; width: 100%; }
+    h1 { font-family: 'Space Grotesk', sans-serif; font-size: 1.6rem; margin-bottom: 8px; }
+    h1 span { color: #ff922b; }
+    .subtitle { color: #6b7280; font-size: 14px; margin-bottom: 28px; }
+    .warning { background: rgba(255,107,0,0.1); border: 1px solid rgba(255,107,0,0.3); border-radius: 10px; padding: 14px; font-size: 13px; color: #ffa94d; margin-bottom: 24px; }
+    .step { background: rgba(255,255,255,0.03); border: 1px solid #1e1e2e; border-radius: 10px; padding: 16px; margin-bottom: 12px; font-size: 14px; }
+    .step-title { font-weight: 600; margin-bottom: 4px; }
+    .step-desc  { color: #6b7280; font-size: 13px; }
+    .btn { padding: 14px 24px; border-radius: 10px; border: none; font-size: 15px; font-weight: 700; cursor: pointer; width: 100%; margin-top: 8px; font-family: 'Inter', sans-serif; transition: all 0.2s; }
+    .btn-fire   { background: linear-gradient(135deg, #6c63ff, #a78bfa); color: #fff; }
+    .btn-fire:hover:not(:disabled) { opacity: 0.9; transform: translateY(-1px); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .log-box { background: #07070d; border: 1px solid #1e1e2e; border-radius: 10px; padding: 16px; font-size: 12px; font-family: monospace; max-height: 280px; overflow-y: auto; margin-top: 16px; white-space: pre-wrap; line-height: 1.7; }
+    .log-ok   { color: #40c057; }
+    .log-skip { color: #ffa94d; }
+    .log-err  { color: #ff6b6b; }
+    .log-info { color: #74c0fc; }
+    .done-badge { background: rgba(64,192,87,0.1); border: 1px solid rgba(64,192,87,0.3); border-radius: 10px; padding: 16px; text-align: center; font-size: 15px; margin-top: 16px; display: none; }
+  </style>
+</head>
+<body>
+<div class="card">
+  <h1>🔥 Firestore <span>Seeder</span></h1>
+  <p class="subtitle">One-click tool to populate your Firebase project with initial EduArchive data.</p>
+
+  <div class="warning">
+    ⚠️ <strong>Run once only.</strong> This creates months, lessons, and user accounts. Re-running will skip existing records. Keep this page private.
+  </div>
+
+  <div class="step"><div class="step-title">Step 1 — Months & Lessons</div><div class="step-desc">Creates 4 months (Jan–Apr 2026) with 3 sample lessons each in Firestore.</div></div>
+  <div class="step"><div class="step-title">Step 2 — Admin Account</div><div class="step-desc">Creates an admin account with role = admin in Firestore.</div></div>
+  <div class="step"><div class="step-title">Step 3 — Demo Student</div><div class="step-desc">Creates a demo student account with January unlocked.</div></div>
+
+  <button class="btn btn-fire" id="seedBtn" onclick="runSeed()">🚀 Run Full Seed</button>
+
+  <div class="log-box" id="logBox"><span class="log-info">Click "Run Full Seed" to begin…</span></div>
+  <div class="done-badge" id="doneBadge">✅ Seeding complete! You can now log in at <a href="index.html" style="color:#a78bfa">index.html</a></div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+<script>
+// Self-contained init — no persistence, works fine from file://
+const firebaseConfig = {
+  apiKey: "AIzaSyCdpTfqVvmiqkEKnanEtFjUZRjBiCf9tA0",
+  authDomain: "vihaga-69969.firebaseapp.com",
+  projectId: "vihaga-69969",
+  storageBucket: "vihaga-69969.firebasestorage.app",
+  messagingSenderId: "1055387328576",
+  appId: "1:1055387328576:web:954931db47c2173051ffa5",
+  measurementId: "G-H1EXN5KWY8"
+};
+if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+const fbAuth = firebase.auth();
+const fbDb   = firebase.firestore();
+// No enablePersistence — avoids hanging on file:// URLs
+</script>
+<script>
+const log = (msg, type = 'info') => {
+  const box = document.getElementById('logBox');
+  const line = document.createElement('div');
+  line.className = `log-${type}`;
+  const ts = new Date().toLocaleTimeString('en', { hour12: false });
+  line.textContent = `[${ts}] ${msg}`;
+  box.appendChild(line);
+  box.scrollTop = box.scrollHeight;
+};
+
+const MONTHS = [
+  { id: '2026-01', label: 'January 2026',  releaseDate: new Date('2026-01-01') },
+  { id: '2026-02', label: 'February 2026', releaseDate: new Date('2026-02-01') },
+  { id: '2026-03', label: 'March 2026',    releaseDate: new Date('2026-03-01') },
+  { id: '2026-04', label: 'April 2026',    releaseDate: new Date('2026-04-01') },
+];
+
+const LESSONS = []; // Cleared for manual management via Admin Panel
+
+async function createOrSkipUser(phone, password, name, role, unlockedMonths = []) {
+  const email = phone.replace(/\s/g, '') + '@eduarchive.app';
+  try {
+    const cred = await fbAuth.createUserWithEmailAndPassword(email, password);
+    await fbDb.collection('users').doc(cred.user.uid).set({
+      name, phone, role,
+      unlockedMonths,
+      joinedAt: firebase.firestore.Timestamp.now(),
+    });
+    log(`  ✓ Created ${role}: ${name} (${phone})`, 'ok');
+  } catch (e) {
+    if (e.code === 'auth/email-already-in-use') {
+      log(`  ⚠ ${name} already exists — skipped.`, 'skip');
+    } else {
+      log(`  ✕ ${name}: ${e.message}`, 'err');
+    }
+  }
+}
+
+async function runSeed() {
+  document.getElementById('seedBtn').disabled = true;
+  document.getElementById('logBox').innerHTML = '';
+
+  log('── PHASE 1: Months ──', 'info');
+  for (const m of MONTHS) {
+    try {
+      const snap = await fbDb.collection('months').doc(m.id).get();
+      if (snap.exists) { log(`  ⚠ Month ${m.label} already exists — skipped.`, 'skip'); continue; }
+      const lessonsForMonth = LESSONS.filter(l => l.monthId === m.id).length;
+      await fbDb.collection('months').doc(m.id).set({
+        label:        m.label,
+        releaseDate:  firebase.firestore.Timestamp.fromDate(m.releaseDate),
+        lessonsCount: lessonsForMonth,
+      });
+      log(`  ✓ Month ${m.label} created.`, 'ok');
+    } catch (e) {
+      log(`  ✕ Firestore Error: ${e.message}`, 'err');
+      if (e.code === 'permission-denied') {
+        log('  ℹ Tip: Ensure Firestore is enabled in "Test Mode" in Firebase Console.', 'info');
+      }
+      document.getElementById('seedBtn').disabled = false;
+      document.getElementById('seedBtn').textContent = 'Retry Full Seed';
+      return; // Stop execution on critical DB error
+    }
+  }
+
+  log('── PHASE 2: Lessons ──', 'info');
+  for (const lesson of LESSONS) {
+    const snap = await fbDb.collection('lessons').where('title','==',lesson.title).where('monthId','==',lesson.monthId).get();
+    if (!snap.empty) { log(`  ⚠ Lesson "${lesson.title}" exists — skipped.`, 'skip'); continue; }
+    await fbDb.collection('lessons').add(lesson);
+    log(`  ✓ Lesson "${lesson.title}" created.`, 'ok');
+  }
+
+  log('── PHASE 3: User Accounts ──', 'info');
+  // Sign out any existing session first so we can create accounts
+  await fbAuth.signOut();
+
+  log('Creating admin account...', 'info');
+  await createOrSkipUser('0700000000', 'Admin@2026', 'Admin Teacher', 'admin', []);
+
+  log('Creating demo student...', 'info');
+  await createOrSkipUser('0771234567', 'Student@2026', 'Kavindu Perera', 'student', ['2026-01']);
+
+  log('', 'info');
+  log('✅ SEEDING COMPLETE!', 'ok');
+  log('Login with:', 'info');
+  log('  Teacher account created.', 'ok');
+  log('  Student account created.', 'ok');
+  log('', 'info');
+  log('Open index.html to sign in.', 'info');
+
+  document.getElementById('doneBadge').style.display = 'block';
+  document.getElementById('seedBtn').textContent = '✅ Seeding Done';
+}
+</script>
+</body>
+</html>

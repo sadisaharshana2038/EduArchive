@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EduArchive — Watch Lessons</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/collection.css"/>
+</head>
+<body>
+<div class="orb orb-1"></div><div class="orb orb-2"></div>
+
+<nav class="nav">
+  <div class="nav-brand"><div class="nav-brand-icon">🎓</div><span>EduArchive</span></div>
+  <div class="nav-links">
+    <a class="nav-link" href="dashboard.html">📚 Library</a>
+  </div>
+  <div class="nav-actions">
+    <div class="nav-avatar" id="navAvatar"></div>
+    <button class="btn btn-ghost btn-sm" onclick="Auth.logout()">Sign Out</button>
+  </div>
+</nav>
+
+<div class="player-page page-container">
+
+  <!-- Left: Lesson list -->
+  <aside class="lesson-sidebar" id="lessonSidebar">
+    <div class="lesson-sidebar-header">
+      <button class="btn btn-ghost btn-sm" onclick="history.back()">← Back</button>
+      <h3 id="monthTitle">Loading…</h3>
+      <div class="lesson-progress-wrap" id="progressWrap"></div>
+    </div>
+    
+    <!-- Tutes Section -->
+    <div id="tutesSection" class="tutes-section" style="display:none">
+      <h4 class="tute-section-title">📑 Study Materials (Tutes)</h4>
+      <div id="tutesList" class="tutes-list"></div>
+    </div>
+
+    <div class="lesson-list" id="lessonList"></div>
+  </aside>
+
+  <!-- Right: Player -->
+  <main class="player-main" id="playerMain">
+    <div class="player-container" id="playerContainer">
+
+      <div class="video-meta" id="videoMeta">
+        <div class="video-title" id="videoTitle">Select a lesson to begin</div>
+        <div class="video-sub" id="videoSub"></div>
+      </div>
+
+      <div class="video-wrapper" id="videoWrapper">
+        <div class="video-placeholder" id="videoPlaceholder">
+          <div class="placeholder-icon">▶</div>
+          <p>Choose a lesson from the sidebar</p>
+        </div>
+        
+        <div class="video-secure-wrapper" id="secureWrapper" style="display:none">
+          <div id="ytPlayer"></div>
+          <!-- Secure Shield to block YT interactions -->
+          <div class="video-overlay-shield" id="interactionShield"></div>
+          
+          <!-- Custom Premium Controls -->
+          <div class="custom-player-controls" id="customControls">
+            <div class="custom-progress-area" id="progressArea">
+              <div class="custom-progress-bar">
+                <div class="custom-progress-fill" id="progressFill"></div>
+                <div class="custom-progress-head"></div>
+              </div>
+            </div>
+            <div class="custom-control-bar">
+              <div style="display:flex; align-items:center; gap:16px;">
+                <button class="custom-play-btn" id="customPlayBtn">
+                  <span id="playIcon">▶</span>
+                </button>
+                <div class="custom-time-display">
+                  <span id="currTime">00:00</span> / <span id="totalTime">00:00</span>
+                </div>
+              </div>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <div class="custom-volume-container">
+                  <button class="custom-control-btn" id="customMuteBtn" title="Mute/Unmute">
+                    <span id="muteIcon">🔊</span>
+                  </button>
+                  <input type="range" class="custom-volume-slider" id="volumeSlider" min="0" max="100" value="100">
+                </div>
+                <button class="custom-control-btn" id="customFullscreenBtn" title="Fullscreen">
+                  <span>⛶</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="video-controls" id="videoControls" style="display:none">
+        <button class="btn btn-ghost btn-sm" id="prevBtn">← Prev</button>
+        <div class="video-info-pill" id="lessonCounter"></div>
+        <button class="btn btn-primary btn-sm" id="nextBtn">Next →</button>
+      </div>
+
+      <div class="lesson-description" id="lessonDescription" style="display:none">
+        <h4>📖 About this lesson</h4>
+        <p id="lessonDescText">This lesson covers essential concepts with hands-on examples.</p>
+      </div>
+
+    </div>
+  </main>
+
+</div>
+
+<footer class="footer">
+  <p>© 2026 EduArchive Portal. All rights reserved.</p>
+  <p style="font-size: 13px; margin-top: 4px;">Developed with ❤️ by <a href="https://futuredevs.top" target="_blank">Futuredevs.top</a></p>
+</footer>
+
+<div id="toast-container"></div>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+<script src="https://www.youtube.com/iframe_api"></script>
+<script src="js/firebase-config.js"></script>
+<script src="js/app.js"></script>
+<script src="js/player.js"></script>
+</body>
+</html>

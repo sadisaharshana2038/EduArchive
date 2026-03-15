@@ -1,0 +1,169 @@
+/* =====================================================
+   Payment Page Styles
+   ===================================================== */
+.payment-layout {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 24px;
+  align-items: start;
+}
+.payment-form-col { display: flex; flex-direction: column; gap: 20px; }
+.payment-summary-col { display: flex; flex-direction: column; gap: 20px; position: sticky; top: 88px; }
+
+/* Step card */
+.payment-step { }
+.step-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+.step-num {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: white;
+  font-weight: 800;
+  font-size: 16px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 4px 14px var(--accent-glow);
+}
+.step-header h3 { margin-bottom: 4px; }
+
+/* Month selector */
+.month-selector {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 10px;
+}
+.month-opt {
+  padding: 14px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border);
+  background: rgba(255,255,255,0.03);
+  cursor: pointer;
+  transition: var(--transition);
+  text-align: center;
+}
+.month-opt:hover { border-color: var(--border-accent); background: rgba(108,99,255,0.08); }
+.month-opt.selected { border-color: var(--accent); background: rgba(108,99,255,0.15); }
+.month-opt.already-unlocked { opacity: 0.4; cursor: not-allowed; }
+.month-opt.pending-payment { opacity: 0.55; cursor: not-allowed; border-color: rgba(255,181,71,0.4); }
+.month-opt-icon { font-size: 22px; margin-bottom: 6px; }
+.month-opt-name { font-size: 12px; font-weight: 600; color: var(--text-secondary); }
+.month-opt.selected .month-opt-name { color: var(--accent-light); }
+.month-opt-badge { margin-top: 6px; }
+
+/* Bank details */
+.bank-details-box {
+  background: rgba(0,212,255,0.06);
+  border: 1px solid rgba(0,212,255,0.2);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 16px;
+}
+.bank-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.bank-row:last-child { border-bottom: none; }
+.bank-row-label { font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+.bank-row-value {
+  font-size: 15px; font-weight: 600; color: var(--text-primary);
+  font-family: var(--font-heading);
+}
+.bank-row-value.highlight {
+  font-size: 1.4rem;
+  color: var(--accent-2);
+  font-weight: 800;
+}
+.copy-btn {
+  background: none; border: none; color: var(--accent-light); cursor: pointer;
+  font-size: 14px; padding: 2px 6px; border-radius: 4px;
+  transition: var(--transition);
+}
+.copy-btn:hover { background: rgba(108,99,255,0.15); }
+
+.bank-warning {
+  font-size: 13px;
+  color: var(--warning);
+  background: rgba(255,181,71,0.08);
+  border: 1px solid rgba(255,181,71,0.2);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+}
+
+/* File drop */
+.file-drop-zone {
+  border: 2px dashed var(--border);
+  border-radius: var(--radius);
+  padding: 32px;
+  text-align: center;
+  cursor: pointer;
+  transition: var(--transition);
+  background: rgba(255,255,255,0.02);
+}
+.file-drop-zone:hover, .file-drop-zone.drag-over {
+  border-color: var(--accent);
+  background: rgba(108,99,255,0.06);
+}
+.drop-icon { font-size: 36px; margin-bottom: 10px; }
+.drop-label { font-size: 14px; font-weight: 600; color: var(--text-secondary); margin-bottom: 4px; }
+.drop-sub   { font-size: 12px; color: var(--text-muted); }
+.slip-preview {
+  margin-top: 12px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  position: relative;
+}
+.slip-preview img { width: 100%; max-height: 200px; object-fit: cover; display: block; }
+.slip-preview-remove {
+  position: absolute; top: 8px; right: 8px;
+  background: rgba(0,0,0,0.7); color: var(--danger);
+  border: none; border-radius: 6px; padding: 4px 8px; cursor: pointer; font-size: 12px;
+}
+
+/* Summary card */
+.summary-card { }
+.summary-empty { color: var(--text-muted); font-size: 14px; text-align: center; padding: 20px; }
+.summary-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+.summary-row:last-child { border-bottom: none; }
+.summary-row .s-label { color: var(--text-secondary); }
+.summary-row .s-value { font-weight: 600; }
+.summary-total { display: flex; justify-content: space-between; padding: 16px 0 0; font-family: var(--font-heading); font-weight: 700; font-size: 1.1rem; border-top: 2px solid var(--border-accent); margin-top: 8px; }
+.summary-total .total-amount { color: var(--accent-2); }
+
+/* FAQ */
+.faq-card { }
+.faq-item { padding: 12px 0; border-bottom: 1px solid var(--border); }
+.faq-item:last-child { border-bottom: none; }
+.faq-q { font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; }
+.faq-a { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+
+/* My payments */
+.my-payments-card { }
+.my-payment-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+.my-payment-row:last-child { border-bottom: none; }
+
+@media (max-width: 1000px) {
+  .payment-layout { grid-template-columns: 1fr; }
+  .payment-summary-col { position: static; }
+}
+@media (max-width: 768px) {
+  .month-selector { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 480px) {
+  .month-selector { grid-template-columns: repeat(2, 1fr); }
+}
