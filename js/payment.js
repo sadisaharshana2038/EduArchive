@@ -74,7 +74,7 @@
       <div class="summary-row"><span class="s-label">Lessons</span><span class="s-value">${selectedMonth.lessons} Videos</span></div>
       <div class="summary-row"><span class="s-label">Access Type</span><span class="s-value">Lifetime ♾️</span></div>
       <div class="summary-row"><span class="s-label">Student</span><span class="s-value">${user.name}</span></div>
-      <div class="summary-total"><span>Total Amount</span><span class="total-amount">LKR 1,500</span></div>`;
+      <div class="summary-total"><span>Total Amount</span><span class="total-amount">LKR 500</span></div>`;
   }
 
   // ── My submissions ──

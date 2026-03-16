@@ -10,11 +10,11 @@ const Timestamp  = firebase.firestore.Timestamp;
 // ── Static bank details (display only) ──────────────
 const DB = {
   bankDetails: {
-    bankName:      "People's Bank",
-    accountName:   "Future Devs Academy",
-    accountNumber: "123-4567-8901-23",
-    branch:        "Colombo Main Branch",
-    amount:        "LKR 1,500 per month",
+    bankName:      "HNB BANK",
+    accountName:   "VT LAKSHAN",
+    accountNumber: "010020530179",
+    branch:        "Anuradhapura",
+    amount:        "LKR 500 per month",
   }
 };
 
@@ -204,7 +204,7 @@ const PaymentUtils = {
       monthId, monthLabel,
       bank, note,
       slipUrl:     slipDataUrl || '',
-      amount:      1500,
+      amount:      500,
       status:      'pending',
       submittedAt: Timestamp.now(),
     });

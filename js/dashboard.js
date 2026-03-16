@@ -164,7 +164,7 @@
           </div>
           <div class="card-meta">
             <div class="meta-item"><div class="meta-value" style="color:var(--text-muted)">${lessonsCount||'--'}</div><div class="meta-label">Lessons</div></div>
-            <div class="meta-item"><div class="meta-value" style="color:var(--text-muted)">LKR</div><div class="meta-label">1,500</div></div>
+            <div class="meta-item"><div class="meta-value" style="color:var(--text-muted)">LKR</div><div class="meta-label">500</div></div>
             <div class="meta-item"><div class="meta-value" style="color:var(--text-muted)">HD</div><div class="meta-label">Quality</div></div>
           </div>
           ${!isComingSoon ? `
@@ -206,7 +206,7 @@
       <div class="modal-month-info">
         <div class="modal-month-icon">${icon}</div>
         <div><div class="modal-month-name">${monthLabel}</div>
-        <div class="modal-month-meta">${lessonsCount} lessons · Lifetime Access · LKR 1,500</div></div>
+        <div class="modal-month-meta">${lessonsCount} lessons · Lifetime Access · LKR 500</div></div>
       </div>
       <div class="modal-note">📌 Complete the bank transfer and submit your payment slip on the <strong>Unlock Month</strong> page. Access is approved within 24 hours.</div>
       <div class="modal-actions">
