@@ -94,24 +94,48 @@
   };
 
   window.clearAllLessons = async function() {
-    const confirmed = await customConfirm('☢ CRITICAL ACTION', 'This will permanently delete ALL lessons from EVERY month. Are you sure you want to proceed?', 'Yes, CLEAR ALL');
+    // Priority: use currentVMMonth if we are in Video Manager
+    const monthId = currentVMMonth || document.getElementById('vmMonth').value;
+    const month = allMonths.find(m => m.id === monthId);
+    
+    let title = '☢ CRITICAL ACTION';
+    let message = 'This will permanently delete ALL lessons from EVERY month. Are you sure you want to proceed?';
+    let confirmText = 'Yes, CLEAR ALL';
+
+    if (monthId && month) {
+      title = '🗑 CLEAR MONTH';
+      message = `This will permanently delete all lessons for "${month.label}". Are you sure you want to proceed?`;
+      confirmText = 'Yes, Clear Month';
+    }
+
+    const confirmed = await customConfirm(title, message, confirmText);
     if (!confirmed) return;
     if (isClearing) return;
     isClearing = true;
     Toast.info('Clearing lessons... Please wait.');
 
     try {
-      const lessonsSnap = await fbDb.collection('lessons').get();
+      let lessonsSnap;
+      if (monthId) {
+        lessonsSnap = await fbDb.collection('lessons').where('monthId', '==', monthId).get();
+      } else {
+        lessonsSnap = await fbDb.collection('lessons').get();
+      }
+
       const batch = fbDb.batch();
       lessonsSnap.docs.forEach(doc => batch.delete(doc.ref));
       
-      allMonths.forEach(m => {
-        batch.update(fbDb.collection('months').doc(m.id), { lessonsCount: 0 });
-      });
+      if (monthId) {
+        batch.update(fbDb.collection('months').doc(monthId), { lessonsCount: 0 });
+      } else {
+        allMonths.forEach(m => {
+          batch.update(fbDb.collection('months').doc(m.id), { lessonsCount: 0 });
+        });
+      }
 
       await batch.commit();
       allMonths = await MonthUtils.getAll();
-      Toast.success('Database cleared! All lessons removed. ✓');
+      Toast.success(monthId ? `Lessons for ${month.label} cleared! ✓` : 'Database cleared! All lessons removed. ✓');
       renderVideoManager();
       renderSidebarStats();
     } catch(e) {
@@ -362,12 +386,18 @@
       header.innerHTML = `🎬 Lessons — <b>${lessons.length}</b> for ${month.label}`;
     }
 
+    const monthInfoHtml = `
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:15px; padding:0 5px">
+        <h3 style="font-size:16px; color:var(--text-secondary)">${month.label} Lessons (<b>${lessons.length}</b>)</h3>
+        ${lessons.length > 0 ? `<button class="btn btn-danger btn-sm" onclick="clearMonthLessons('${month.id}')" style="font-size:11px; padding:4px 8px; border-radius:6px">🗑 Clear ${month.label.split(' ')[0]}</button>` : ''}
+      </div>`;
+
     if (lessons.length === 0) {
-      container.innerHTML = `<div class="empty-state" style="padding:40px">No lessons for this month yet. 🎬</div>`;
+      container.innerHTML = monthInfoHtml + `<div class="empty-state" style="padding:40px">No lessons for this month yet. 🎬</div>`;
       return;
     }
 
-    container.innerHTML = lessons.map(l => `
+    container.innerHTML = monthInfoHtml + lessons.map(l => `
       <div class="vm-lesson-row">
         <div class="vm-lesson-num">${l.order}</div>
         <div class="vm-lesson-info">
@@ -380,6 +410,11 @@
         <button class="vm-delete-btn" onclick="deleteLesson('${l.id}','${l.monthId}')" title="Delete Lesson">🗑</button>
       </div>`).join('');
   }
+
+  window.clearMonthLessons = function(mid) {
+    currentVMMonth = mid;
+    window.clearAllLessons();
+  };
 
   window.addLesson = async function() {
     const monthId  = document.getElementById('vmMonth').value;
